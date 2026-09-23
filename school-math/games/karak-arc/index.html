@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-langs="ar en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-en="The quadratic function — the Karak Castle trebuchet">الاقتران التربيعي — منجنيق قلعة الكرك</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<link rel="stylesheet" href="../engine/hud.css">
+<!-- real maths: the same KaTeX copy the lesson pages use (the engine typesets with it when present) -->
+<link rel="stylesheet" href="../../../math-lab/assets/vendor/katex.min.css">
+<script src="../../../math-lab/assets/vendor/katex.min.js"></script>
+<link rel="stylesheet" href="../karak/karak.css">
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div id="veil"></div>
+<svg id="leaders"></svg>
+<div id="labels"></div>
+<div id="prompts"></div>
+
+<div id="hud">
+  <div id="obj" class="panel" hidden><small><span data-en="Task">المهمة</span><span class="num" id="obj-count"></span></small><p id="obj-text"></p><div class="bar"><i id="obj-bar"></i></div></div>
+  <div class="tools">
+    <button class="ibtn panel" id="btn-menu" aria-label="القائمة" title="القائمة" data-en-title="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg></button>
+    <button class="ibtn panel" id="btn-codex" aria-label="الخلاصة" title="الخلاصة" data-en-title="Notebook" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M5 4.5h9.5a3 3 0 013 3V20H8a3 3 0 01-3-3z"/><path d="M5 17a3 3 0 013-3h9.5"/></svg><span class="badge" id="badge">0</span></button>
+    <button class="ibtn panel" id="btn-mute" aria-label="الصوت" title="الصوت" data-en-title="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path id="snd-wave" d="M15.5 9.5a3.5 3.5 0 010 5M18 7a7 7 0 010 10"/></svg></button>
+  </div>
+  <div id="caption" class="panel"><p id="cap-text"></p><button class="why" id="why" hidden data-en="Why?">لماذا؟</button></div>
+  <div id="note" class="panel" hidden><button class="x" id="note-x" aria-label="إغلاق" data-en-title="Close">×</button><h4 id="note-t"></h4><p id="note-p"></p></div>
+
+  <div id="dock">
+    <div id="card" class="panel" hidden></div>
+    <div id="ask" class="panel" hidden><h5 id="ask-q"></h5><div class="opts" id="ask-opts"></div></div>
+  </div>
+
+  <!-- the engineer's board: the book's items on squared paper -->
+  <section id="board" class="panel" hidden>
+    <div class="ph"><span data-en="The engineer’s board">لوح المهندس</span><small id="bd-f"></small></div>
+    <svg id="bd" viewBox="0 0 320 250"></svg>
+    <div class="bd-row" id="bd-ctl" hidden><button class="pbtn" id="bd-flip" data-en="Reflect in the x-axis">اعكس في محور x</button></div>
+    <div id="bd-out"></div>
+  </section>
+
+  <!-- the siege workshop (sandbox) -->
+  <section id="props" class="panel" hidden>
+    <div class="ph2" data-en="The siege workshop">ورشة الحصار</div>
+    <div id="work"></div>
+    <div id="free" hidden>
+      <div id="live"></div>
+      <div class="prow"><label data-en="Crib">القاعدة</label><input type="range" id="in-lift" min="0" max="10" step="1" value="0"><output id="out-lift">0 m</output></div>
+      <button class="pbtn" id="btn-fire" data-en="Fire">أطلِق</button>
+    </div>
+    <button class="pbtn" id="btn-next" data-en="Next lesson: transformations ›">الدرس التالي: التحويلات الهندسية ‹</button>
+  </section>
+
+  <aside id="codex" hidden>
+    <div class="panel">
+      <button class="x" id="codex-x" aria-label="إغلاق" data-en-title="Close">×</button>
+      <small class="k" data-en="Notebook">الخلاصة</small>
+      <h2 data-en="The quadratic function">الاقتران التربيعي</h2>
+      <div class="formula locked" id="formula">?</div>
+      <div class="tabs"><button data-tab="ent" class="on" data-en="Learned">ما تعلّمته</button><button data-tab="how" data-en="Method">الطريقة</button><button data-tab="why" data-en="Why?">لماذا؟</button><button data-tab="log" data-en="Your log">سجلّك</button></div>
+      <div class="tab" data-tab="ent"><ul id="entries"><li class="empty">ما تكتشفه يُدوَّن هنا.</li></ul></div>
+      <div class="tab" data-tab="how" hidden></div>
+      <div class="tab" data-tab="why" hidden></div>
+      <div class="tab" data-tab="log" hidden><p style="font-size:13px;color:var(--ash)" data-en="Every job the workshop solves is logged here.">كل مهمة تحلّها الورشة تُسجَّل هنا.</p><ul id="log"></ul></div>
+    </div>
+  </aside>
+</div>
+
+<div id="eqcard" class="panel"><div class="f" id="eq-f"></div><small id="eq-s"></small></div>
+<div id="toast" class="panel"></div>
+
+<div id="menu" hidden>
+  <div class="panel">
+    <h3 data-en="Chapters">المراحل</h3>
+    <div id="chapters"></div>
+    <div class="toggles"><button id="tg-music" class="on" data-en="Music">الموسيقى</button><button id="tg-sfx" class="on" data-en="Effects">المؤثرات</button></div>
+    <button class="resume" id="resume" data-en="Resume">متابعة</button>
+  </div>
+</div>
+
+<script>
+  // opened as a file (file://): the module below is blocked, so explain instead of a black screen
+  if (location.protocol === 'file:') addEventListener('DOMContentLoaded', () => {
+    const i = location.pathname.indexOf('/school-math/'), u = 'http://localhost:8753' + (i >= 0 ? location.pathname.slice(i) : location.pathname);
+    const d = document.createElement('div'); d.style.cssText = 'position:fixed;inset:0;z-index:99;display:grid;place-content:center;gap:10px;padding:24px;text-align:center;background:#000;color:#ebebf5;font:15px/1.8 Vazirmatn,system-ui,sans-serif';
+    d.innerHTML = '<p>الألعاب لا تعمل عند فتح الملف مباشرة. افتحها عبر الخادم المحلي:</p><a style="color:#5c939f;direction:ltr" href="' + u + '">' + u + '</a><code style="direction:ltr;color:#98989d">python3 school-math/games/tools/serve.py</code>';
+    document.body.appendChild(d);
+  });
+</script>
+<script type="module" src="./main.js"></script>
+</body>
+</html>

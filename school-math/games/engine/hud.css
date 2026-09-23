@@ -1,0 +1,160 @@
+/* Lesson-games engine — shared HUD styles (school-math tokens: #000 / #1c1c1e / #38383a / #5c939f,
+   Vazirmatn + El Messiri + Azeret Mono). New games link this and add only their own rules.
+   Needs in <head>: Google Fonts El Messiri + Vazirmatn. Paths below are relative to this file. */
+@font-face{ font-family:"Azeret Mono"; src:url("../../../math-lab/assets/fonts/azeret-mono-regular.otf") format("opentype"); font-weight:400; }
+@font-face{ font-family:"Roc Grotesk"; src:url("../../../math-lab/assets/fonts/roc-grotesk-regular.woff2") format("woff2"); font-weight:400; }
+:root{
+  --bg:#000; --surface:rgba(28,28,30,.8); --raise:#2c2c2e; --line:#38383a; --line-2:rgba(255,255,255,.08);
+  --text:#f5f5f7; --fog:#ebebf5; --ash:#98989d; --dim:#6e6e73;
+  --accent:#5c939f; --accent-rgb:92,147,159; --brass:#d9a441; --good:#8fd1a8; --bad:#e0634f;
+  --ui:"Vazirmatn",system-ui,sans-serif; --display:"El Messiri","Vazirmatn",serif; --latin:"Roc Grotesk",system-ui,sans-serif; --mono:"Azeret Mono",ui-monospace,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:var(--ui);overflow:hidden;-webkit-font-smoothing:antialiased;user-select:none}
+canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+[hidden]{display:none!important}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.num{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
+/* maths typeset by KaTeX (engine/ui.js: mathify, typeset); the mono .num stays the fallback */
+.katex{font-size:1.1em;direction:ltr;unicode-bidi:isolate;color:inherit;white-space:nowrap}
+.tx{direction:ltr;unicode-bidi:isolate}
+#eqcard .f .katex,.formula .katex{font-size:1em}
+#veil{position:fixed;inset:0;background:#000;opacity:1;pointer-events:none;z-index:50}
+/* the loading ring over the veil (ui.js bootWhenLoaded) */
+#loader{position:fixed;inset:0;z-index:55;display:grid;place-content:center;justify-items:center;gap:14px;color:var(--ash);font-size:13px;pointer-events:none;transition:opacity .5s}
+#loader.out{opacity:0}
+#loader i{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,.12);border-top-color:var(--accent);animation:spin 1s linear infinite}
+#loader p{margin:0} #loader b{font-weight:400;color:var(--fog)}
+@keyframes spin{to{transform:rotate(360deg)}}
+body.shot #loader{display:none}
+
+#hud{position:fixed;inset:0;pointer-events:none;z-index:20}
+#hud > *{pointer-events:auto}
+#obj{position:absolute;top:16px;right:16px;width:min(300px,calc(100% - 180px));padding:12px 14px 13px;transition:opacity .45s var(--ease),transform .45s var(--ease)}
+#obj.swap{opacity:0;transform:translateY(-6px)}
+#obj small{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--accent);font-weight:600}
+#obj small .num{color:var(--ash);font-weight:400}
+#obj p{margin:6px 0 0;font-size:14.5px;line-height:1.65}
+#obj .bar{height:3px;border-radius:2px;background:rgba(255,255,255,.08);margin-top:10px;overflow:hidden}
+#obj .bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:2px;transition:width .5s var(--ease)}
+#obj.done small{color:var(--good)} #obj.done .bar i{background:var(--good)}
+.tools{position:absolute;top:16px;left:16px;display:flex;gap:8px}
+.ibtn{position:relative;width:38px;height:38px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:var(--fog);transition:border-color .2s,background .2s}
+.ibtn:hover{border-color:var(--accent);background:rgba(44,44,46,.9)}
+.ibtn svg{width:17px;height:17px}
+.badge{position:absolute;top:-4px;left:-4px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:var(--accent);color:#fff;font-family:var(--mono);font-size:10.5px;line-height:17px;text-align:center;transform:scale(0);transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.badge.on{transform:scale(1)}
+.ibtn.pulse{animation:pulse 1.1s var(--ease)}
+@keyframes pulse{35%{box-shadow:0 0 0 7px rgba(var(--accent-rgb),.22);border-color:var(--accent)}}
+#caption{position:absolute;bottom:18px;left:50%;transform:translate(-50%,8px);max-width:min(640px,calc(100% - 32px));display:flex;align-items:center;gap:12px;padding:11px 18px;opacity:0;transition:opacity .45s var(--ease),transform .45s var(--ease);pointer-events:none}
+#caption.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#caption p{margin:0;font-size:16px;line-height:1.7}
+#caption .why{flex:none;font-size:12.5px;color:var(--accent);padding:3px 11px;border:1px solid rgba(var(--accent-rgb),.45);border-radius:100px;transition:background .2s}
+#caption .why:hover{background:rgba(var(--accent-rgb),.15)}
+#caption .next{flex:none;font-size:12.5px;color:var(--fog);padding:3px 12px;border:1px solid var(--line);border-radius:100px;background:rgba(255,255,255,.04);pointer-events:auto;transition:background .2s,border-color .2s}
+#caption .next:hover{border-color:var(--accent);background:rgba(var(--accent-rgb),.15)}
+#caption .next.ready{border-color:var(--accent);color:var(--text);animation:nextpulse 1.8s ease-in-out infinite}
+@keyframes nextpulse{50%{background:rgba(var(--accent-rgb),.25)}}
+#note{position:absolute;bottom:84px;left:50%;transform:translateX(-50%);width:min(460px,calc(100% - 32px));padding:16px 18px 17px;animation:rise .45s var(--ease);z-index:3}
+#note h4{margin:0 0 6px;padding-inline-end:34px;font-family:var(--display);font-size:17px;font-weight:600}
+#note p{margin:0;font-size:14px;line-height:1.9;color:var(--fog)}
+.x{position:absolute;top:10px;inset-inline-end:10px;width:26px;height:26px;border-radius:50%;border:1px solid var(--line);color:var(--ash);font-size:15px;line-height:1}
+.x:hover{border-color:var(--accent);color:var(--text)}
+@keyframes rise{from{opacity:0;transform:translate(-50%,8px)}}
+@keyframes slidein{from{opacity:0;transform:translateX(10px)}}
+#toast{position:fixed;top:16px;left:50%;transform:translate(-50%,-8px);padding:9px 16px;z-index:35;font-size:13.5px;opacity:0;transition:all .45s var(--ease);pointer-events:none;white-space:nowrap}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#toast b{color:var(--brass);font-weight:500}
+#eqcard{position:fixed;left:50%;top:36%;transform:translate(-50%,-50%) scale(.94);z-index:30;padding:22px 34px 20px;text-align:center;opacity:0;pointer-events:none;transition:opacity .5s var(--ease),transform .5s var(--ease)}
+#eqcard.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#eqcard.fly{transition:transform .9s cubic-bezier(.6,0,.4,1),opacity .9s ease}
+#eqcard .f{font-family:var(--mono);direction:ltr;font-size:40px;color:var(--text)}
+#eqcard .f sup{font-size:.55em;color:var(--brass)}
+#eqcard small{display:block;margin-top:8px;font-size:13.5px;color:var(--ash)}
+
+#codex{position:absolute;top:64px;left:16px;bottom:16px;width:min(380px,calc(100% - 32px));display:flex;align-items:flex-start}
+#codex .panel{position:relative;width:100%;max-height:100%;overflow:auto;padding:20px 20px 18px;animation:slidein .5s var(--ease);scrollbar-width:thin}
+#codex small.k{font-size:11.5px;color:var(--accent);font-weight:600}
+#codex h2{margin:4px 0 0;font-family:var(--display);font-size:22px;font-weight:600}
+.formula{direction:ltr;text-align:center;font-family:var(--mono);font-size:22px;padding:14px 0;margin:14px 0;border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+.formula sup{color:var(--brass);font-size:.6em}
+.formula.locked{color:var(--dim)}
+.tabs{display:flex;gap:4px;margin-bottom:12px;padding:3px;background:var(--raise);border-radius:100px}
+.tabs button{flex:1;padding:6px 0;border-radius:100px;font-size:12.5px;color:var(--ash)}
+.tabs button.on{background:var(--accent);color:#fff}
+.tab{font-size:14px;line-height:1.95;color:var(--fog)}
+.tab p{margin:0 0 10px} .tab ol{margin:0;padding-inline-start:20px} .tab li{margin-bottom:6px}
+.tab .m{font-family:var(--mono);font-size:12.5px;direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+#entries{list-style:none;margin:0;padding:0}
+#entries li{padding:9px 0;border-bottom:1px solid var(--line-2)}
+#entries li.new{animation:inkin 1s var(--ease)}
+#entries .empty{color:var(--dim);font-size:13px;border:0}
+@keyframes inkin{from{opacity:0;background:rgba(var(--accent-rgb),.15)}}
+#menu{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);animation:fade .3s ease}
+@keyframes fade{from{opacity:0}}
+#menu .panel{width:min(440px,calc(100% - 32px));padding:22px 22px 20px}
+#menu h3{margin:0 0 14px;font-family:var(--display);font-size:22px;font-weight:600}
+#chapters{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+#chapters button{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:var(--raise);border:1px solid transparent;font-size:14px;color:var(--fog);text-align:start;transition:border-color .2s}
+#chapters button span{font-family:var(--mono);font-size:11px;color:var(--ash)}
+#chapters button:hover{border-color:var(--accent)} #chapters button.now{border-color:rgba(var(--accent-rgb),.6)}
+.toggles{display:flex;gap:6px;margin-top:14px}
+.toggles button{flex:1;height:36px;border-radius:100px;background:var(--raise);font-size:13px;color:var(--ash);border:1px solid transparent}
+.toggles button.on{color:var(--text);border-color:rgba(var(--accent-rgb),.6)}
+.resume{width:100%;height:42px;margin-top:14px;border-radius:100px;background:var(--accent);color:#fff;font-size:14.5px;font-weight:500}
+
+/* world labels (ui.js label/setLabel): crisp HTML tags that follow 3D points, with leader lines */
+#leaders{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9}
+#leaders line{stroke:rgba(245,245,247,.45);stroke-width:1}
+#labels{position:fixed;inset:0;pointer-events:none;z-index:10}
+.lbl{position:absolute;left:0;top:0;white-space:nowrap;font-size:12.5px;line-height:1;padding:5px 9px;border-radius:7px;background:rgba(0,0,0,.55);border:1px solid var(--line-2);color:var(--fog);will-change:transform}
+.lbl.body{font-size:13px;font-weight:500;background:rgba(28,28,30,.72);border-color:var(--line)}
+.lbl.side{font-family:var(--mono);direction:ltr;font-size:13px}
+.lbl.area{font-family:var(--mono);direction:ltr;font-size:15px;padding:6px 11px}
+.lbl.axis{background:none;border:0;color:var(--dim);font-size:12px}
+
+/* world-anchored action chips (ui.js chip) */
+#prompts{position:fixed;inset:0;pointer-events:none;z-index:21}
+.chip{position:absolute;left:0;top:0;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:7px 14px;border-radius:100px;
+  background:rgba(28,28,30,.85);border:1px solid rgba(var(--accent-rgb),.6);color:var(--text);font-size:13px;pointer-events:auto;opacity:0;animation:chipin .5s var(--ease) forwards;transition:background .2s,border-color .2s}
+.chip:hover{background:rgba(var(--accent-rgb),.25);border-color:var(--accent)}
+.chip.passive{pointer-events:none;border-color:var(--line);color:var(--fog)}
+.chip b{font-family:var(--mono);font-weight:400;color:var(--accent)}
+.chip.out{animation:chipout .3s var(--ease) forwards}
+@keyframes chipin{from{opacity:0;margin-top:6px}to{opacity:1;margin-top:0}}
+@keyframes chipout{to{opacity:0}}
+
+/* ?shot — a clean still for the lesson page's cover */
+body.shot #hud, body.shot #prompts, body.shot #labels, body.shot #leaders{display:none}
+@media (max-width:700px){ #obj{width:calc(100% - 150px)} #caption p{font-size:14.5px} }
+/* English (ui.js LANG): the layout stays where it is; only the text runs left to right */
+body.en #hud,body.en #labels,body.en #prompts,body.en #menu,body.en #eqcard,body.en #toast,body.en #loader{direction:ltr}
+
+/* quality.js: the board tier draws no post passes, so its vignette (and two games' flash / tint) are CSS layers over the canvas;
+   plus the graphics messages (no WebGL 2, software GL, lost context) and the ?debug=1 panel */
+.q-over{position:fixed;inset:0;pointer-events:none}
+.q-over>div{position:absolute;inset:0}
+.q-vig{background:radial-gradient(ellipse at center,rgba(0,0,0,0) 42%,rgba(0,0,0,var(--q-v1,.08)) 70%,rgba(0,0,0,var(--q-v2,.23)) 100%)}
+.q-tint{background:rgb(255,237,230);mix-blend-mode:multiply;opacity:0}
+.q-flash{background:rgb(255,250,242);mix-blend-mode:screen;opacity:0}
+.q-msg{position:fixed;z-index:1000;font-size:15px;line-height:1.6;color:var(--text)}
+.q-msg p{margin:0}
+.q-msg p[lang=en]{font-family:var(--latin);font-size:13.5px;color:var(--ash);margin-top:6px}
+.q-msg.block{inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;background:var(--bg)}
+.q-msg.block p{max-width:560px}
+.q-msg.banner,.q-msg.note{top:14px;left:50%;transform:translateX(-50%);max-width:min(620px,calc(100% - 28px));padding:12px 44px 12px 16px;border-radius:14px;background:var(--surface);border:1px solid var(--line);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.q-msg.note{padding:10px 18px;font-size:14px}
+.q-msg .x{position:absolute;top:8px;inset-inline-end:8px;width:28px;height:28px;border-radius:50%;background:var(--raise);color:var(--ash);font-size:16px;line-height:1}
+#q-debug{position:fixed;left:8px;bottom:8px;z-index:1001;padding:8px 10px;border-radius:8px;background:rgba(0,0,0,.75);color:var(--fog);font:11px/1.5 var(--mono);white-space:pre;direction:ltr;pointer-events:none}
+body.shot .q-msg,body.shot #q-debug{display:none}
+
+/* a worked explanation built line by line (engine/explain.js): the newest line is bright */
+.ex-h{margin:0 0 8px;font-size:13px;font-weight:600;color:var(--accent);line-height:1.6}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.steps li{font-size:14.5px;line-height:1.8;color:var(--ash);text-align:center;transition:color .4s}
+.steps li.on{color:var(--text)}
+
+/* the close button (.x) sits at the line's end in both languages, so headings keep clear of it */
+#codex .panel > small, #codex h2{padding-inline-end:34px}

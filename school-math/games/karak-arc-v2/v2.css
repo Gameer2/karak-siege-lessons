@@ -1,0 +1,33 @@
+/* «حصار الكرك، 1183»: the language with presence (story.js) and the captions' kinds and key terms (engine/ui.js ⟦k|…⟧). */
+
+/* the story's moments and the chapter titles: large, centred, over a soft dark wash of the scene */
+#story{position:fixed;inset:0;z-index:30;display:grid;place-content:center;justify-items:center;gap:10px;padding:0 9vw;text-align:center;pointer-events:none;
+  background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(4,6,11,.78),rgba(4,6,11,.45) 60%,rgba(4,6,11,.12));opacity:0;transition:opacity .6s var(--ease)}
+#story.on{opacity:1}
+#story .st-line{margin:0;max-width:26em;font-family:var(--display);font-weight:600;font-size:clamp(24px,2.5vw,40px);line-height:1.65;color:#f7efe0;
+  text-shadow:0 2px 20px rgba(0,0,0,.85);opacity:0;transform:translateY(12px);animation:st-in 1s var(--ease) forwards}
+#story .st-line.small{max-width:34em;font-family:var(--ui);font-weight:400;font-size:clamp(17px,1.45vw,22px);color:#e3d8c6}
+#story .st-go{pointer-events:auto;margin-top:20px;padding:8px 26px;border-radius:100px;border:1px solid rgba(217,164,65,.7);background:rgba(20,16,10,.6);
+  color:#f7efe0;font-family:var(--ui);font-size:16px;opacity:0;animation:st-in .8s var(--ease) forwards;transition:background .2s}
+#story .st-go:hover{background:rgba(217,164,65,.25)}
+#story .st-title{opacity:0;animation:st-in 1s var(--ease) forwards}
+#story .st-title small{display:block;font-family:var(--ui);font-size:clamp(14px,1.1vw,17px);letter-spacing:.14em;color:var(--brass)}
+#story .st-title h2{margin:8px 0 10px;font-family:var(--display);font-weight:700;font-size:clamp(38px,4.4vw,68px);line-height:1.25;color:#fbf4e6;text-shadow:0 3px 28px rgba(0,0,0,.9)}
+#story .st-title p{margin:0 auto;max-width:30em;font-size:clamp(17px,1.5vw,23px);line-height:1.7;color:#e3d8c6}
+@keyframes st-in{to{opacity:1;transform:none}}
+body.en #story{direction:ltr}
+body.shot #story{display:none}
+
+/* the captions: larger, wider, a coloured edge by kind (a wrong move, a success, the story) */
+#caption{max-width:min(860px,calc(100% - 40px));padding:13px 20px;border-inline-start:4px solid var(--accent)}
+#caption p{font-size:19px;line-height:1.75}
+#caption[data-kind=bad]{border-inline-start-color:#ff5a4a}
+#caption[data-kind=ok]{border-inline-start-color:#7dffb0}
+#caption[data-kind=story]{border-inline-start-color:var(--brass)}
+#obj p{font-size:16px}
+@media (max-width:700px){ #caption p{font-size:16px} }
+
+/* key terms in the colour of what they name on screen */
+.k{font-weight:700}
+.k-ax{color:#9bff5a} .k-vx{color:#ff6fb5} .k-a{color:#ffc233} .k-b{color:#38e1ff} .k-c{color:#c4aeff}
+.k-h{color:#ffd27a} .k-d{color:#6fe9ff} .k-bad{color:#ff7a6a} .k-ok{color:#8dffbc} .k-em{color:#ffffff}

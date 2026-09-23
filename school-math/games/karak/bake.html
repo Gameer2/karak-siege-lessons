@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Karak Castle — light bake</title>
+<!-- The bake page for the weak tiers' light (bake.js): builds the world exactly as the games do on board/low, bakes the
+     sun's shadow and the sky's occlusion on the GPU, and leaves the result in window.__bake for tools/bake-karak.mjs,
+     which writes ./baked/karak.json + karak.bin. Not a page for players. -->
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>html,body{margin:0;background:#111;color:#ccc;font:13px monospace}#i{padding:10px;white-space:pre}</style>
+</head>
+<body>
+<canvas id="gl" width="16" height="16"></canvas><div id="i"></div>
+<script type="module">
+import * as THREE from 'three';
+import { initAssets } from '../engine/assets.js';
+import { buildKarak, groundH, SUN } from './world.js';
+import { bakeGPU } from './bake.js';
+const info = document.getElementById('i'), log = s => { info.textContent += s + '\n'; console.log(s); };
+try {
+  const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('gl') }); initAssets(renderer);
+  const scene = new THREE.Scene(), K = buildKarak(scene, { lite: true, bake: 'build' });   // lite: the games' own build
+  scene.updateMatrixWorld(true);
+  const t0 = performance.now();
+  const { index, bytes } = await bakeGPU(renderer, { list: K.bakeList, maps: K.bakeMaps, occluders: K.bakeOcc, sun: SUN, lift: groundH, log });
+  const ms = Math.round(performance.now() - t0);
+  let s = ''; for (let i = 0; i < bytes.length; i += 32768) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 32768));
+  const triN = o => o.isInstancedMesh ? 0 : (o.geometry.index ? o.geometry.index.count : o.geometry.attributes.position.count) / 3;
+  const tris = K.bakeList.reduce((n, e) => n + triN(e.obj), 0);
+  log(K.bakeList.filter(e => triN(e.obj) > 2000).map(e => `${e.id} ${triN(e.obj)} tris`).join(' · '));
+  log(`done in ${ms} ms: ${index.samples} samples, ${bytes.length} bytes, ${Math.round(tris)} baked triangles, ${K.bakeOcc.length} occluders`);
+  window.__bake = { index: { world: 'karak', lite: true, ms, tris: Math.round(tris), ...index }, b64: btoa(s) };
+} catch (e) { log('ERROR ' + e.message); window.__bake = { error: String(e.stack || e) }; }
+</script>
+</body>
+</html>

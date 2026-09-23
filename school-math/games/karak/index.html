@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Karak Castle — world viewer</title>
+<!-- A viewer for the shared world of the Karak series (world.js), for the agents building the games:
+     ?shot=plane|trebuchet|court|wall|ridge|landing|overview|cover  &s=roll (−20…10)  &lift=0…10  &u=swing phase 0…1
+     &grid (the graph plane). Tools: node play.mjs karak "?shot=trebuchet&u=.6" 9000 -->
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>html,body{margin:0;height:100%;background:#000;overflow:hidden}canvas{display:block;width:100%;height:100%}#i{position:fixed;left:10px;bottom:8px;color:#ccc;font:12px monospace}</style>
+</head>
+<body>
+<canvas id="gl"></canvas><div id="i"></div>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { initAssets, whenLoaded } from '../engine/assets.js';
+import { buildKarak, makeTrebuchet, makeStone, makeFlight, graphGrid, shot } from './world.js';
+import { quad, shift } from './quad.js';
+const q = new URLSearchParams(location.search);
+const canvas = document.getElementById('gl');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.02;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+initAssets(renderer);
+const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, .1, 6000);
+const scene = new THREE.Scene();
+const K = buildKarak(scene), TB = makeTrebuchet(K); scene.add(TB.group);
+K.mantlet(75); K.tower(50);
+const s = +(q.get('s') || 0), L = +(q.get('lift') || 0); TB.place(s, L);
+const stone = makeStone(K); scene.add(stone); stone.position.copy(TB.swing(+(q.get('u') || 0)));
+if (q.has('grid')) { graphGrid(scene, { x0: -20, x1: 100, y0: 0, y1: 45 }); const f = shift(quad(-0.02, 1.2, 14), s, L); makeFlight(scene).set(f.f, s, f.roots[1]); }
+const v = shot(q.get('shot') || 'plane'); camera.position.copy(v.pos); camera.lookAt(v.look);
+const composer = new EffectComposer(renderer); composer.addPass(new RenderPass(scene, camera));
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), .34, .5, .88)); composer.addPass(new OutputPass());
+let tris = 0; scene.traverse(o => { if (o.isMesh && o.geometry.index) tris += o.geometry.index.count / 3 * (o.isInstancedMesh ? o.count : 1); else if (o.isMesh) tris += o.geometry.attributes.position.count / 3 * (o.isInstancedMesh ? o.count : 1); });
+document.getElementById('i').textContent = `Karak · release (${s}, ${14 + L}) · ~${Math.round(tris / 1000)}k triangles before the glTF props`;
+const clock = new THREE.Clock(); let t = 0;
+window.__K = K; window.__TB = TB;
+(function frame() { requestAnimationFrame(frame); const dt = Math.min(clock.getDelta(), .05); t += dt; K.update(dt, t, camera); composer.render(); })();
+whenLoaded().then(() => { window.__shotReady = true; });
+</script>
+</body>
+</html>

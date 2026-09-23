@@ -1,0 +1,77 @@
+/* The shared look of the Karak series games (karak-arc, karak-move, karak-land): the labels in the world, the
+   dock (the table, the rule card, a question), the engineer's board and the siege workshop. The HUD itself is
+   ../engine/hud.css. */
+:root{ --fl:#f2b45a; --gh:#9fd6df; --vx:#e8b45a; --ax:#7fc4cf; --rt:#9fd08a; --lv:#d98f6b; --ca:#f2b45a; --cb:#9fd6df; --cc:#b9a4e6; }
+.lbl.pt{font-family:var(--mono);direction:ltr;font-size:12px;padding:3px 7px;background:rgba(28,28,30,.72);border-color:var(--line)}
+.lbl.vx{font-family:var(--mono);direction:ltr;font-size:13px;color:var(--vx);background:rgba(28,28,30,.8);border-color:rgba(232,180,90,.45)}
+.lbl.ax{font-family:var(--mono);direction:ltr;font-size:13px;color:var(--ax);background:rgba(28,28,30,.8);border-color:rgba(127,196,207,.45)}
+.lbl.rt{font-family:var(--mono);direction:ltr;font-size:13px;color:var(--rt);background:rgba(28,28,30,.8);border-color:rgba(159,208,138,.45)}
+.lbl.lv{font-size:12.5px;color:var(--lv);background:rgba(28,28,30,.8);border-color:rgba(217,143,107,.45)}
+.lbl.tag{font-size:12.5px;background:rgba(28,28,30,.78);border-color:var(--line)}
+.lbl.tick{background:none;border:0;padding:0;color:#f5f5f7;font-family:var(--mono);direction:ltr;font-size:13px;font-weight:600;text-shadow:0 1px 3px #000,0 0 6px rgba(0,0,0,.9)}
+.lbl.unit{background:rgba(8,12,16,.7);border:0;padding:2px 7px;border-radius:6px;color:#f5f5f7;font-size:12.5px;font-weight:500}
+#eqcard .f{font-size:34px}
+#codex h2{font-size:22px} .formula{font-size:15px;line-height:2}
+#hud > #caption.on{pointer-events:none} #caption .why,#caption .next{pointer-events:auto}
+
+/* the dock (top centre): the watchmen's table, the rule card, a question with options */
+#dock{position:absolute;top:16px;left:50%;transform:translateX(-50%);width:min(470px,calc(100% - 540px));min-width:310px;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+#dock > .panel{pointer-events:auto;padding:12px 14px 13px;animation:rise2 .5s var(--ease)}
+@keyframes rise2{from{opacity:0;transform:translateY(-6px)}}
+#card h5,#card .ex-h,#ask h5{margin:0 0 8px;font-size:13px;font-weight:500;line-height:1.8;color:var(--fog)}
+#card h5 b,#ask h5 b{color:var(--accent);font-weight:600}
+.tbl{width:100%;border-collapse:collapse;direction:ltr;font-family:var(--mono);font-size:12.5px;text-align:center}
+.tbl th{font-weight:400;color:var(--ash);padding:4px 2px;text-align:left;white-space:nowrap}
+.tbl td{padding:4px 2px;border-left:1px solid var(--line-2);color:var(--fog);transition:background .3s,color .3s}
+.tbl tr:first-child td{color:var(--ash)}
+.tbl td.on{background:rgba(var(--accent-rgb),.22);color:var(--text)}
+.tbl td.pair{color:var(--vx)}
+.rule{direction:ltr;text-align:center;font-size:19px;padding:4px 0 2px}
+.rule .ca{color:var(--ca)} .rule .cb{color:var(--cb)} .rule .cc{color:var(--cc)}
+.rule-sub{margin-top:6px;font-size:12.5px;color:var(--ash);text-align:center;line-height:1.8}
+.opts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.opt{min-width:72px;min-height:40px;padding:6px 12px;border-radius:12px;background:var(--raise);border:1px solid var(--line);font-size:14.5px;color:var(--text);transition:border-color .2s,background .2s,transform .15s}
+.opt:hover{border-color:var(--brass);transform:translateY(-1px)}
+.opt.on{border-color:var(--accent);background:rgba(var(--accent-rgb),.22)}
+.opt.no{border-color:var(--bad);animation:shake .45s}
+@keyframes shake{20%{translate:-6px 0}40%{translate:6px 0}60%{translate:-4px 0}80%{translate:3px 0}}
+
+/* the engineer's board (a plan on squared paper, for the book's items) */
+#board{position:absolute;top:64px;left:16px;width:340px;padding:12px 14px 12px;animation:slidein .6s var(--ease)}
+#board .ph{font-size:12px;font-weight:600;color:var(--accent);margin-bottom:6px;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+#board .ph small{color:var(--fog);font-weight:400;font-size:13px}
+#bd{width:100%;height:auto;display:block;direction:ltr;touch-action:none;cursor:crosshair;background:rgba(0,0,0,.25);border-radius:8px}
+#bd .grid{stroke:rgba(255,255,255,.16);stroke-width:1}
+#bd .axis{stroke:rgba(255,255,255,.85);stroke-width:1.6}
+#bd text{font-family:"Azeret Mono",monospace;font-size:10.5px;fill:#d1d1d6}
+#bd .hdl{cursor:grab}
+.bd-row{display:flex;gap:8px;margin-top:8px}
+.bd-row .pbtn{margin-top:0}
+#bd-out{margin-top:6px;font-size:12.5px;line-height:1.8;color:var(--fog);min-height:22px;text-align:center}
+
+/* the siege workshop (sandbox) */
+#props{position:absolute;top:118px;right:16px;width:290px;padding:14px 14px 12px;animation:slidein .6s var(--ease);max-height:calc(100% - 200px);overflow:auto;scrollbar-width:thin}
+#props .ph2{font-size:12px;font-weight:600;color:var(--accent);margin-bottom:8px}
+#work{font-size:12.5px;line-height:1.85;color:var(--fog)}
+#work .m,.tab .m,#live .m{font-family:var(--mono);direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+#live{margin-top:8px;padding-top:8px;border-top:1px solid var(--line-2);font-size:12.5px;line-height:1.9;color:var(--fog)}
+#live .k{color:var(--ash)}
+.prow{display:grid;grid-template-columns:auto 1fr 52px;gap:8px;align-items:center;margin-top:8px}
+.prow label{font-size:12.5px;color:var(--ash)}
+.prow output{font-family:var(--mono);direction:ltr;font-size:12.5px;text-align:center;padding:3px 0;border-radius:100px;background:var(--raise);border:1px solid var(--line)}
+input[type=range]{width:100%;height:4px;appearance:none;-webkit-appearance:none;background:#3a3a3c;border-radius:2px;direction:ltr;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--text);border:1px solid var(--accent);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--text);border:1px solid var(--accent);cursor:pointer}
+.pbtn{margin-top:10px;width:100%;min-height:36px;border-radius:100px;background:var(--raise);border:1px solid var(--line);font-size:13px;color:var(--fog);transition:border-color .2s,background .2s}
+.pbtn:hover{border-color:var(--accent);background:rgba(var(--accent-rgb),.15)}
+.pbtn.go{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500}
+.pbtn[disabled]{opacity:.45;pointer-events:none}
+#log{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+#log li{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:7px 10px;border-radius:8px;background:var(--raise)}
+#log li .num{color:var(--brass)}
+#log li.new{animation:inkin .9s var(--ease)}
+body.shot #dock,body.shot #board{display:none}
+@media (max-width:980px){ #dock{width:calc(100% - 32px);top:auto;bottom:84px} }
+@media (max-width:700px){ #props{top:auto;bottom:74px;right:12px;left:12px;width:auto;max-height:40%} #board{top:auto;bottom:74px;left:12px;right:12px;width:auto} }
+
+.tbl td.gap{color:var(--vx);font-weight:600}

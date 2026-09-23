@@ -1,0 +1,254 @@
+{
+  "asset": {
+    "generator": "glTF-Transform v4.5.0",
+    "version": "2.0"
+  },
+  "accessors": [
+    {
+      "type": "SCALAR",
+      "componentType": 5123,
+      "count": 7788,
+      "normalized": false,
+      "byteOffset": 0,
+      "bufferView": 0
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5120,
+      "count": 1603,
+      "normalized": true,
+      "byteOffset": 0,
+      "bufferView": 1
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5122,
+      "count": 1603,
+      "max": [
+        6792,
+        32767,
+        2948
+      ],
+      "min": [
+        -6792,
+        -32767,
+        -2948
+      ],
+      "normalized": true,
+      "byteOffset": 0,
+      "bufferView": 2
+    },
+    {
+      "type": "VEC2",
+      "componentType": 5123,
+      "count": 1603,
+      "normalized": true,
+      "byteOffset": 0,
+      "bufferView": 3
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 1,
+      "byteOffset": 0,
+      "byteLength": 15576,
+      "target": 34963,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "buffer": 0,
+          "byteOffset": 0,
+          "byteLength": 2876,
+          "mode": "TRIANGLES",
+          "byteStride": 2,
+          "count": 7788
+        }
+      }
+    },
+    {
+      "buffer": 1,
+      "byteOffset": 15576,
+      "byteLength": 6412,
+      "target": 34962,
+      "byteStride": 4,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "buffer": 0,
+          "byteOffset": 2876,
+          "byteLength": 2755,
+          "mode": "ATTRIBUTES",
+          "filter": "OCTAHEDRAL",
+          "byteStride": 4,
+          "count": 1603
+        }
+      }
+    },
+    {
+      "buffer": 1,
+      "byteOffset": 21988,
+      "byteLength": 12824,
+      "target": 34962,
+      "byteStride": 8,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "buffer": 0,
+          "byteOffset": 5632,
+          "byteLength": 6767,
+          "mode": "ATTRIBUTES",
+          "byteStride": 8,
+          "count": 1603
+        }
+      }
+    },
+    {
+      "buffer": 1,
+      "byteOffset": 34812,
+      "byteLength": 6412,
+      "target": 34962,
+      "byteStride": 4,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "buffer": 0,
+          "byteOffset": 12400,
+          "byteLength": 5295,
+          "mode": "ATTRIBUTES",
+          "byteStride": 4,
+          "count": 1603
+        }
+      }
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "extensions": {
+        "EXT_texture_webp": {
+          "source": 1
+        }
+      }
+    },
+    {
+      "sampler": 0,
+      "extensions": {
+        "EXT_texture_webp": {
+          "source": 0
+        }
+      }
+    },
+    {
+      "sampler": 0,
+      "extensions": {
+        "EXT_texture_webp": {
+          "source": 2
+        }
+      }
+    }
+  ],
+  "images": [
+    {
+      "name": "sledgehammer_01_nor_gl",
+      "mimeType": "image/webp",
+      "uri": "textures/sledgehammer_01_nor_gl_1k.webp"
+    },
+    {
+      "name": "sledgehammer_01_diff",
+      "mimeType": "image/webp",
+      "uri": "textures/sledgehammer_01_diff_1k.webp"
+    },
+    {
+      "name": "sledgehammer_01_metal-sledgehammer_01_rough",
+      "mimeType": "image/webp",
+      "uri": "textures/sledgehammer_01_arm_1k.webp"
+    }
+  ],
+  "buffers": [
+    {
+      "uri": "sledgehammer_01.bin",
+      "byteLength": 17696
+    },
+    {
+      "byteLength": 41224,
+      "extensions": {
+        "EXT_meshopt_compression": {
+          "fallback": true
+        }
+      }
+    }
+  ],
+  "materials": [
+    {
+      "name": "sledgehammer_01",
+      "doubleSided": true,
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicRoughnessTexture": {
+          "index": 2
+        }
+      },
+      "normalTexture": {
+        "index": 1
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Cube.008",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 2,
+            "TEXCOORD_0": 3
+          },
+          "mode": 4,
+          "material": 0,
+          "indices": 0
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "sledgehammer_01",
+      "translation": [
+        -0.000013943761587142944,
+        -0.24374660849571228,
+        1.601874828338623e-7
+      ],
+      "scale": [
+        0.5028106272220612,
+        0.5028106272220612,
+        0.5028106272220612
+      ],
+      "mesh": 0
+    }
+  ],
+  "scenes": [
+    {
+      "name": "blend_export",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "scene": 0,
+  "extensionsUsed": [
+    "EXT_meshopt_compression",
+    "EXT_texture_webp",
+    "KHR_mesh_quantization"
+  ],
+  "extensionsRequired": [
+    "EXT_meshopt_compression",
+    "EXT_texture_webp",
+    "KHR_mesh_quantization"
+  ]
+}

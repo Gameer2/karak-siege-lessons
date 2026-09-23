@@ -1,0 +1,89 @@
+/* The teaching kit's look (engine/teach.js; piloted in karak-arc-v2): the typed answer and its keypad, the rule lab's
+   sliders, the learner's missed questions in «سجلّك», the menu's ideas, and teacher mode (big text, the step bar,
+   «تجميد»). Load after hud.css and the series' css. */
+
+/* ---------- a typed answer ---------- */
+#answer h5{margin:0 0 8px;font-size:13.5px;font-weight:500;line-height:1.8;color:var(--fog)}
+.ans-row{display:flex;gap:8px;align-items:center;direction:ltr}
+.ans-in{flex:1;min-width:0;height:42px;padding:0 12px;border-radius:12px;background:#111113;border:1px solid var(--line);color:var(--text);font-family:var(--mono);font-size:20px;text-align:center;outline:none;user-select:text;transition:border-color .2s,background .2s}
+.ans-in:focus{border-color:var(--accent)}
+.ans-in.ok{border-color:var(--accent);background:rgba(var(--accent-rgb),.2)}
+.ans-in.no{border-color:var(--bad);animation:shake .45s}
+.ans-unit{font-size:13px;color:var(--ash)}
+.ans-go{height:42px;padding:0 16px;border-radius:12px;background:var(--accent);color:#fff;font-size:14px;font-weight:500}
+.keypad{display:grid;grid-template-columns:repeat(13,1fr);gap:4px;margin-top:8px;direction:ltr}
+.keypad button{height:34px;border-radius:9px;background:var(--raise);border:1px solid var(--line);color:var(--text);font-family:var(--mono);font-size:15px;transition:border-color .15s,background .15s}
+.keypad button:hover{border-color:var(--accent)}
+.keypad button:active{background:rgba(var(--accent-rgb),.3)}
+@media (pointer:fine){ .keypad{display:none} }          /* a keyboard is there: the keypad would only crowd the dock */
+@media (max-width:700px){ .keypad{grid-template-columns:repeat(7,1fr)} .keypad button{height:40px} }
+
+/* ---------- the rule lab ---------- */
+#lab h5{margin:0 0 4px;font-size:13px;font-weight:500;line-height:1.8;color:var(--fog)}
+#lab .rule{font-size:21px}
+.lrow{display:grid;grid-template-columns:22px 1fr 64px;gap:10px;align-items:center;margin-top:8px;direction:ltr}
+.lrow b{font-family:var(--mono);font-size:17px;text-align:center}
+.lrow b.ca{color:var(--ca)} .lrow b.cb{color:var(--cb)} .lrow b.cc{color:var(--cc)}
+.lrow output{font-family:var(--mono);font-size:14px;text-align:center;padding:4px 0;border-radius:100px;background:var(--raise);border:1px solid var(--line)}
+.lrow.fixed{opacity:.38}
+/* the slider to move pulses until it is touched: the step waits on it, and it must say so */
+.lrow.live output{border-color:var(--accent)}
+.lrow.live input[type=range]::-webkit-slider-thumb{animation:thumb-pulse 1.3s ease-in-out infinite}
+.lrow.live input[type=range]::-moz-range-thumb{animation:thumb-pulse 1.3s ease-in-out infinite}
+@keyframes thumb-pulse{0%,100%{box-shadow:0 0 0 0 rgba(var(--accent-rgb),.9)}50%{box-shadow:0 0 0 9px rgba(var(--accent-rgb),0)}}
+.lrow input[type=range]{height:6px}
+.lrow input[type=range]::-webkit-slider-thumb{width:22px;height:22px}
+.lrow input[type=range]::-moz-range-thumb{width:22px;height:22px}
+/* a throw by feel (lab blind): the lever alone, no rule and no numbers to compute with */
+#lab-ends{display:none}
+#lab.blind #lab-rule,#lab.blind #lab-out,#lab.blind .lrow.fixed,#lab.blind .lrow output,#lab.blind .lrow b{display:none}
+#lab.blind .lrow{grid-template-columns:1fr}
+#lab.blind #lab-ends{display:flex;justify-content:space-between;direction:ltr;margin-top:6px;font-size:14px;color:var(--fog)}
+#lab-out{margin-top:8px;font-size:13px;line-height:1.8;color:var(--fog);text-align:center;min-height:22px}
+
+/* ---------- «سجلّك»: what to review ---------- */
+#misses{margin-top:14px;padding-top:10px;border-top:1px solid var(--line-2)}
+#misses h6{margin:0 0 6px;font-size:12.5px;font-weight:600;color:var(--accent)}
+#misses p{margin:0;font-size:12.5px;color:var(--ash)}
+#misses ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+#misses li{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;line-height:1.7;padding:7px 10px;border-radius:8px;background:var(--raise)}
+#misses li .num{color:var(--bad);flex:none}
+
+/* ---------- the menu: ideas under their chapter, a ✓ on finished chapters, the teacher switch ---------- */
+#chapters button.idea{padding:6px 12px 6px 12px;padding-inline-start:38px;font-size:12.5px;color:var(--ash);min-height:0}
+#chapters button.idea.now{color:var(--text)}
+#chapters i.ok{font-style:normal;color:var(--accent);margin-inline-start:auto;padding-inline-start:8px}
+.teach-tg{width:100%;height:36px;margin:12px 0 0;border-radius:100px;background:var(--raise);font-size:13px;color:var(--ash);border:1px solid transparent}
+.teach-tg.on{color:var(--text);border-color:rgba(var(--accent-rgb),.6)}
+.opt.reveal{border-style:dashed;color:var(--fog)}
+
+/* ---------- teacher mode: the board is read from the back of the room ---------- */
+body.teach #caption p{font-size:23px;line-height:1.6}
+body.teach #obj{width:min(380px,calc(100% - 150px))}
+body.teach #obj p{font-size:19px}
+body.teach #card h5,body.teach #card .ex-h,body.teach #ask h5,body.teach #answer h5,body.teach #lab h5{font-size:18px}
+body.teach .steps li{font-size:18px}
+body.teach .opt{font-size:19px;min-height:52px;padding:8px 18px}
+body.teach .tbl{font-size:17px}
+body.teach .rule,body.teach #lab .rule{font-size:27px}
+body.teach .ans-in{height:54px;font-size:26px}
+body.teach .keypad{display:grid}
+body.teach .keypad button{height:46px;font-size:20px}
+body.teach #bd text{font-size:12px}
+@media (min-width:981px){ body.teach #dock{width:min(640px,calc(100% - 540px))} }
+@media (min-width:701px){ body.teach #board{width:min(560px,44vw)} }
+body.teach .lbl.tick{font-size:17px}
+body.teach .lbl.pt,body.teach .lbl.vx,body.teach .lbl.ax,body.teach .lbl.rt{font-size:17px}
+/* the step bar: the teacher's clicker on the screen itself */
+#tbar{position:fixed;z-index:40;left:50%;bottom:92px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:6px;border-radius:100px}
+#tbar[hidden]{display:none}
+#tbar button{min-width:46px;height:46px;border-radius:100px;background:var(--raise);border:1px solid var(--line);color:var(--text);font-size:22px;line-height:1}
+#tbar button:hover{border-color:var(--accent)}
+#tbar .fz{font-size:14px;padding:0 16px}
+#tbar .fz[aria-pressed=true]{background:var(--accent);border-color:var(--accent)}
+#tbar span{min-width:150px;max-width:34vw;padding:0 8px;text-align:center;font-size:15px;color:var(--fog);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* «تجميد»: only the maths stays on screen (the graph, the board, the table); the words step aside */
+body.freeze #obj,body.freeze #caption,body.freeze #hud .tools,body.freeze #note,body.freeze #toast,body.freeze #ask,body.freeze #answer{opacity:0;pointer-events:none;transition:opacity .3s}
+body.shot #tbar{display:none}
+
+@media (prefers-reduced-motion:reduce){ .ans-in.no,.opt.no{animation:none} }
